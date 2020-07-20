@@ -1,0 +1,20 @@
+
+** Bar Chart: 150 students of class were asked to state their favorite subjects and these were the results of survey.
+                       French: 30,    English: 20, Maths:26,     Geography: 38,     Science:34
+
+*** D3 Visualization Link : file:///F:/GIT_Project/MyGitRepository/Data_Visualization_Python/Bar_Chart_D3_Visualization.html					   
+
+
+
+** Pie chart: A company collected statistics about children to show that children liked TV more than other activities. These were the results of the survey
+                       School: 6, Sleep: 8, Playing: 2, Study: 4, T. V.: 1, Others: 3
+					   
+*** D3 Visualization Link : file:///F:/GIT_Project/MyGitRepository/Data_Visualization_Python/Pie_Chart_D3_Visualization.html			   
+
+
+
+Box (and Whisker) plot: A clinal trial measurement of two different groups A and B were reported. Which group is performing better (high values are better)?
+                   A={0.22, -0.87, -2.39, -1.79, 0.37, -1.54, 1.28, -0.31, -0.74, 1.72, 0.38, -0.17, -1.62, -1.10, 0.30, 0.15, 2.30, 0.19, -0.50, -0.09}
+                   B={-5.13, -2.15, -3.43, -3.83, 0.50, -3.25, 4.32, 0.63, 5.18, -0.43, 7.11, 4.87, -3.10, -5.81, 3.76, 6.31, 2.58, 0.07, 5.76, 3.50}					   
+				   
+*** D3 Visualization Link : file:///F:/GIT_Project/MyGitRepository/Data_Visualization_Python/Box_Plot_D3_Visualization.html
