@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.box {
+  font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+  fill: lightblue;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.box .center {
+  stroke-dasharray: 3,3;
+}
+
+.box .outlier {
+  fill: none;
+  stroke: #000;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+ 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ 
+.x.axis path { 
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="box.js"></script>
+<script>
+var labels = true;
+
+var margin = {top: 30, right: 50, bottom: 70, left: 50},
+	width = 800 - margin.left - margin.right,
+	height = 400 - margin.top - margin.bottom,
+	min = Infinity,
+    max = -Infinity;
+
+//dataset of two groups	
+var dataSet = [
+  {A: 0.22, B: -5.13},
+  {A: -0.87, B: -2.15},
+  {A: -2.39, B: -3.43},
+  {A: -1.79, B: -3.83},
+  {A: 0.37, B: 0.50},
+  {A: -1.54, B: -3.25},
+  {A: 1.28, B: 4.32},
+  {A: -0.31, B: 0.63},
+  {A: -0.74, B: 5.18},
+  {A: 1.72, B: -0.43},
+  {A: 0.38, B: 7.11},
+  {A: -0.17, B: 4.87},
+  {A: -1.62, B: -3.10},
+  {A: -1.10, B: -5.81},
+  {A: 0.30, B: 3.76},
+  {A: 0.15, B: 6.31},
+  {A: 2.30, B: 2.58},
+  {A: 0.19, B: 0.07},
+  {A: -0.50, B: 5.76},
+  {A: -0.09, B: 3.50}];
+  
+var data = [];
+	data[0] = [];
+	data[1] = [];
+	data[0][0] = "A";
+	data[1][0] = "B";
+	data[0][1] = [];
+	data[1][1] = [];
+
+dataSet.forEach(function(x) {
+	var v1 = Math.floor(x.A),
+		v2 = Math.floor(x.B),
+		rowMax = Math.max(v1, v2),
+		rowMin = Math.min(v1, v2);
+
+	data[0][1].push(v1);
+	data[1][1].push(v2);
+		 
+	if (rowMax > max) max = rowMax;
+	if (rowMin < min) min = rowMin;	
+});
+  
+var chart = d3.box()
+	.whiskers(iqRange(1.5))
+	.height(height)	
+	.domain([min, max])
+	.showLabels(labels);
+
+var svg = d3.select("body").append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.attr("class", "box")    
+	.append("g")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// x-axis 	
+var x = d3.scale.ordinal()	   
+	.domain( data.map(function(d) { console.log(d); return d[0] } ) )	    
+	.rangeRoundBands([0 , width], 0.7, 0.3); 		
+
+var xAxis = d3.svg.axis()
+	.scale(x)
+	.orient("bottom");
+
+// y-axis
+var y = d3.scale.linear()
+	.domain([min, max])
+	.range([height + margin.top, 0 + margin.top]);
+	
+var yAxis = d3.svg.axis()
+   .scale(y)
+   .orient("left");
+
+// draw box plot
+svg.selectAll(".box")	   
+    .data(data)
+	.enter().append("g")
+	.attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
+    .call(chart.width(x.rangeBand())); 
+
+// add title	
+svg.append("text")
+    .attr("x", (width / 2))             
+    .attr("y", 0 + (margin.top / 2))
+    .attr("text-anchor", "middle")  
+    .style("font-size", "19px") 
+    .text("Clinical Trial Measurement Results");
+
+// draw y-axis with values 	
+svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+	.append("text")
+	.attr("transform", "rotate(-90)")
+    .attr("y", -30)
+    .attr("dy", ".71em")
+	.style("text-anchor", "end")
+	.style("font-size", "16px") 
+	.text("Measurement Values");		
+	
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + (height  + margin.top + 10) + ")")
+    .call(xAxis)
+	.append("text")
+	.style("text-anchor", "end")
+    .attr("x", 250)
+    .attr("dy", "4em")
+    .attr("transform", "rotate(360)")
+    .text("Groups"); 
+
+//computes interquartile range
+function iqRange(k) {
+  return function(d, i) {
+    var qrtl1 = d.quartiles[0],
+        qrtl3 = d.quartiles[2],
+        iqRange = (qrtl3 - qrtl1) * k,
+        i = -1,
+        j = d.length;
+    while (d[++i] < qrtl1 - iqRange);
+    while (d[--j] > qrtl3 + iqRange);
+    return [i, j];
+  };
+}
+
+</script>
